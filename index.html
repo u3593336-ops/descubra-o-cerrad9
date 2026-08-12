@@ -8,17 +8,14 @@
 </head>
 <body>
 
-    <!-- TELA DE INÍCIO -->
     <div id="tela-inicio" class="tela-overlay">
         <div class="conteudo-inicio">
             <h1>Descubra o Cerrado</h1>
             <p>Jogue com o Sapo ou a Arara, responda às perguntas e chegue ao final do tabuleiro!</p>
             <button id="btn-iniciar" class="btn-pixel">JOGAR</button>
-            <button id="btn-tela-cheia-inicio" class="btn-pixel btn-secundario">ATIVAR TELA CHEIA</button>
         </div>
     </div>
 
-    <!-- TELA DE FIM DE JOGO -->
     <div id="tela-fim" class="tela-overlay escondido">
         <div class="conteudo-inicio">
             <h1 id="texto-vencedor">Temos um Vencedor!</h1>
@@ -26,10 +23,8 @@
         </div>
     </div>
 
-    <!-- CONTAINER PRINCIPAL DO JOGO -->
     <main id="jogo-container">
         
-        <!-- PAINEL DE CONTROLE (UI) -->
         <div id="painel-controle">
             <div id="turno-indicador">
                 Vez do: <strong id="nome-jogador">Sapo</strong>
@@ -38,28 +33,24 @@
                 <div id="dado-valor">?</div>
                 <button id="btn-girar" class="btn-pixel">GIRAR DADO</button>
             </div>
-            <button id="btn-fullscreen-jogo" class="btn-pixel btn-pequeno">Tela Cheia</button>
+            <button id="btn-voltar-inicio" class="btn-pixel btn-secundario">VOLTAR</button>
         </div>
 
-        <!-- TABULEIRO -->
         <div id="tabuleiro">
-            <img src="sapo.png" id="jogador1" class="sprite" alt="Sapo">
-            <img src="arara.png" id="jogador2" class="sprite" alt="Arara">
+            <img src="./sapo.png" id="jogador1" class="sprite" alt="Sapo">
+            <img src="./arara.png" id="jogador2" class="sprite" alt="Arara">
         </div>
 
     </main>
 
-    <!-- MODAL DE PERGUNTAS -->
     <div id="modal-pergunta" class="escondido">
         <div class="modal-conteudo">
             <h2 id="texto-pergunta">Pergunta vai aqui?</h2>
             <div id="opcoes-container">
-                <!-- Botões de alternativas serão injetados aqui via JS -->
-            </div>
+                </div>
         </div>
     </div>
 
     <script src="script.js"></script>
 </body>
 </html>
-

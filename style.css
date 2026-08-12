@@ -7,14 +7,16 @@
     font-family: 'Press Start 2P', cursive;
 }
 
-body {
-    background-color: #2b2b2b;
+/* Evita barra de rolagem e fixa a tela para jogos mobile */
+body, html {
+    background-color: #1a1a1a;
     color: #fff;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    overflow: hidden;
 }
 
 /* ================= TELAS DE SOBREPOSIÇÃO ================= */
@@ -24,6 +26,7 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
+    background-color: #2b2b2b; /* Fundo escuro enquanto a imagem carrega */
     background-image: url('./fundo_inicio.png'); 
     background-size: cover;
     background-position: center;
@@ -35,17 +38,19 @@ body {
 }
 
 .conteudo-inicio {
-    background-color: rgba(0, 0, 0, 0.8);
-    padding: 40px;
+    background-color: rgba(0, 0, 0, 0.85);
+    padding: 30px;
     border-radius: 15px;
     border: 4px solid #fff;
-    max-width: 80%;
+    max-width: 90%;
+    width: 600px;
 }
 
 .conteudo-inicio h1 {
     color: #ffd700;
     margin-bottom: 20px;
     line-height: 1.5;
+    font-size: 24px;
 }
 
 .conteudo-inicio p {
@@ -63,42 +68,36 @@ body {
     background-color: #4caf50;
     color: white;
     border: 4px solid #2e7d32;
-    padding: 15px 20px;
-    font-size: 16px;
+    padding: 12px 20px;
+    font-size: 14px;
     cursor: pointer;
     text-transform: uppercase;
-    margin: 10px;
+    margin: 5px;
     transition: transform 0.1s;
     image-rendering: pixelated;
 }
 
-.btn-pixel:hover {
-    background-color: #45a049;
-}
-
-.btn-pixel:active {
-    transform: scale(0.95);
-}
+.btn-pixel:hover { background-color: #45a049; }
+.btn-pixel:active { transform: scale(0.95); }
 
 .btn-secundario {
     background-color: #e53935;
     border-color: #b71c1c;
     padding: 10px;
-    font-size: 12px;
+    font-size: 10px;
 }
+.btn-secundario:hover { background-color: #f44336; }
 
-.btn-secundario:hover {
-    background-color: #f44336;
-}
-
-/* ================= CONTEINER DO JOGO ================= */
+/* ================= CONTEINER DO JOGO (MECÂNICA GOOGLE DOODLE) ================= */
 #jogo-container {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     width: 100%;
-    max-width: 1200px;
+    height: 100%;
     padding: 10px;
+    box-sizing: border-box;
 }
 
 /* PAINEL (UI) */
@@ -106,48 +105,51 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap; /* Para telas finas */
     width: 100%;
+    /* Mantém a largura do painel alinhada com a largura máxima do tabuleiro */
+    max-width: min(100%, calc(70vh * 1000 / 562));
     background-color: #3e2723;
     border: 4px solid #5d4037;
-    padding: 10px 20px;
+    padding: 10px 15px;
     margin-bottom: 10px;
     border-radius: 8px;
+    gap: 10px;
 }
 
 #turno-indicador {
-    font-size: 14px;
+    font-size: 12px;
     color: #ffeb3b;
 }
 
 #dado-container {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 10px;
 }
 
 #dado-valor {
-    width: 50px;
-    height: 50px;
+    width: 45px;
+    height: 45px;
     background-color: #fff;
     color: #000;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 24px;
+    font-size: 20px;
     border: 4px solid #000;
     border-radius: 5px;
 }
 
-/* ================= TABULEIRO ================= */
+/* ================= TABULEIRO RESPONSIVO ================= */
 #tabuleiro {
     position: relative;
-    width: 100%;
+    /* Essa matemática garante que nunca corte na tela, ajustando largura ou altura */
     aspect-ratio: 1000 / 562;
-    /* AQUI ESTÁ A CORREÇÃO PARA O ARQUIVO .JPG */
+    max-width: min(100%, calc(75vh * 1000 / 562));
+    width: 100%;
     background-image: url('./fundo.jpg'); 
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
+    background-size: 100% 100%; /* Trava o fundo no tamanho exato da div */
     border: 4px solid #000;
     image-rendering: pixelated;
 }
@@ -157,7 +159,7 @@ body {
     position: absolute;
     width: 5%;
     height: auto;
-    transition: all 0.5s ease-in-out;
+    transition: all 0.4s ease-in-out;
     transform: translate(-50%, -50%);
     z-index: 10;
 }
@@ -169,54 +171,49 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.85);
+    background-color: rgba(0, 0, 0, 0.9);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 500;
+    z-index: 2000;
 }
 
 .modal-conteudo {
     background-color: #fffacd;
     color: #333;
-    padding: 30px;
+    padding: 25px;
     border: 6px solid #8b4513;
     border-radius: 10px;
-    max-width: 600px;
-    width: 90%;
+    max-width: 90%;
+    width: 550px;
     text-align: center;
 }
 
 #texto-pergunta {
-    font-size: 14px;
+    font-size: 12px;
     line-height: 1.6;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 }
 
 #opcoes-container {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
 }
 
 .btn-opcao {
     background-color: #ffcc80;
     border: 3px solid #ef6c00;
-    padding: 15px;
-    font-size: 12px;
+    padding: 12px;
+    font-size: 10px;
     cursor: pointer;
     text-align: left;
     transition: background-color 0.2s;
     line-height: 1.4;
 }
 
-.btn-opcao:hover {
-    background-color: #ffa726;
-}
-
-.btn-opcao:disabled {
-    cursor: not-allowed;
-}
+.btn-opcao:hover { background-color: #ffa726; }
+.btn-opcao:disabled { cursor: not-allowed; opacity: 0.8; }
 
 .opcao-certa {
     background-color: #66bb6a !important;
@@ -230,19 +227,7 @@ body {
     color: white;
 }
 
-@media (max-width: 768px) {
-    #painel-controle {
-        flex-direction: column;
-        gap: 15px;
-    }
-    .conteudo-inicio h1 {
-        font-size: 20px;
-    }
-    #texto-pergunta {
-        font-size: 12px;
-    }
-    .btn-opcao {
-        font-size: 10px;
-        padding: 10px;
-    }
+@media (max-width: 600px) {
+    .conteudo-inicio h1 { font-size: 18px; }
+    #painel-controle { justify-content: center; }
 }

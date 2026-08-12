@@ -4,7 +4,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Press Start 2P', cursive; /* Fonte estilo Pixel Art */
+    font-family: 'Press Start 2P', cursive;
 }
 
 body {
@@ -14,17 +14,17 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    overflow: hidden; /* Evita rolagem desnecessária */
+    overflow: hidden;
 }
 
-/* ================= TELAS DE SOBREPOSIÇÃO (INÍCIO/FIM) ================= */
+/* ================= TELAS DE SOBREPOSIÇÃO ================= */
 .tela-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-image: url('fundo_inicio.png');
+    background-image: url('./fundo_inicio.png'); 
     background-size: cover;
     background-position: center;
     display: flex;
@@ -34,9 +34,8 @@ body {
     text-align: center;
 }
 
-/* Fundo semi-transparente escuro para destacar o texto sobre a imagem desfocada */
 .conteudo-inicio {
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.8);
     padding: 40px;
     border-radius: 15px;
     border: 4px solid #fff;
@@ -82,17 +81,14 @@ body {
 }
 
 .btn-secundario {
-    background-color: #2196F3;
-    border-color: #1565C0;
+    background-color: #e53935;
+    border-color: #b71c1c;
+    padding: 10px;
+    font-size: 12px;
 }
 
 .btn-secundario:hover {
-    background-color: #1e88e5;
-}
-
-.btn-pequeno {
-    padding: 10px;
-    font-size: 10px;
+    background-color: #f44336;
 }
 
 /* ================= CONTEINER DO JOGO ================= */
@@ -143,26 +139,26 @@ body {
 }
 
 /* ================= TABULEIRO ================= */
-/* Aspect Ratio Baseado na imagem original (1000x562) para que as coordenadas % funcionem perfeitas */
 #tabuleiro {
     position: relative;
     width: 100%;
     aspect-ratio: 1000 / 562;
-    background-image: url('fundo.png');
+    /* AQUI ESTÁ A CORREÇÃO PARA O ARQUIVO .JPG */
+    background-image: url('./fundo.jpg'); 
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
     border: 4px solid #000;
-    image-rendering: pixelated; /* Deixa o visual serrilhado bonito */
+    image-rendering: pixelated;
 }
 
 /* PERSONAGENS (SPRITES) */
 .sprite {
     position: absolute;
-    width: 5%; /* Tamanho relativo à tela para ser responsivo */
+    width: 5%;
     height: auto;
-    transition: all 0.5s ease-in-out; /* Animação de movimento suave */
-    transform: translate(-50%, -50%); /* Centraliza o ponto âncora do sprite */
+    transition: all 0.5s ease-in-out;
+    transform: translate(-50%, -50%);
     z-index: 10;
 }
 
@@ -181,7 +177,7 @@ body {
 }
 
 .modal-conteudo {
-    background-color: #fffacd; /* Amarelo pálido, lembrando pergaminho */
+    background-color: #fffacd;
     color: #333;
     padding: 30px;
     border: 6px solid #8b4513;
@@ -223,18 +219,17 @@ body {
 }
 
 .opcao-certa {
-    background-color: #66bb6a !important; /* Verde */
+    background-color: #66bb6a !important;
     border-color: #2e7d32 !important;
     color: white;
 }
 
 .opcao-errada {
-    background-color: #ef5350 !important; /* Vermelho */
+    background-color: #ef5350 !important;
     border-color: #c62828 !important;
     color: white;
 }
 
-/* Responsividade Básica para Celulares */
 @media (max-width: 768px) {
     #painel-controle {
         flex-direction: column;
@@ -251,4 +246,3 @@ body {
         padding: 10px;
     }
 }
-

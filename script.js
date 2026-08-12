@@ -32,103 +32,93 @@ const perguntasIniciais = [
     { p: "Se você encontrasse lixo em uma área de Cerrado, qual seria a atitude mais adequada?", c: "Recolher de forma segura e dar a destinação correta ao resíduo", e: ["Enterrar o lixo no solo", "Jogá-lo em um rio próximo"] }
 ];
 
-// Cópia das perguntas para ir sorteando e removendo para não repetir
 let bancoPerguntas = [...perguntasIniciais]; 
 
 // ================= Coordenadas do Tabuleiro (%) =================
-// Baseado no grid da imagem 'fundo.png'. A casa 0 é a SAÍDA, a 25 é a CHEGADA.
-// X = esquerda para direita, Y = topo para baixo.
 const coordenadas = [
-    { x: 13, y: 15 }, // 0: SAÍDA (Texto SAÍDA)
-    { x: 13, y: 28 }, // 1 (Amarelo)
-    { x: 13, y: 41 }, // 2 (Verde)
-    { x: 13, y: 55 }, // 3 (Azul)
-    { x: 13, y: 68 }, // 4 (Vermelho)
-    { x: 13, y: 81 }, // 5 (Amarelo)
-    { x: 13, y: 94 }, // 6 (Verde - Canto inf esquerdo)
-    { x: 25, y: 94 }, // 7 (Azul)
-    { x: 38, y: 94 }, // 8 (Vermelho)
-    { x: 50, y: 94 }, // 9 (Amarelo)
-    { x: 62, y: 94 }, // 10 (Verde)
-    { x: 75, y: 94 }, // 11 (Azul)
-    { x: 87, y: 94 }, // 12 (Vermelho)
-    { x: 100, y: 94 },// 13 (Amarelo - Canto inf direito)
-    { x: 100, y: 81 },// 14 (Azul)
-    { x: 100, y: 68 },// 15 (Verde)
-    { x: 87, y: 68 }, // 16 (Amarelo perto do tronco)
-    { x: 75, y: 68 }, // 17 (Verde)
-    { x: 62, y: 68 }, // 18 (Azul)
-    { x: 50, y: 68 }, // 19 (Vermelho perto da onça)
-    { x: 50, y: 55 }, // 20 (Azul)
-    { x: 50, y: 41 }, // 21 (Amarelo)
-    { x: 62, y: 41 }, // 22 (Verde)
-    { x: 75, y: 41 }, // 23 (Azul)
-    { x: 87, y: 41 }, // 24 (Vermelho)
-    { x: 87, y: 20 }  // 25: CHEGADA (Texto CHEGADA)
+    { x: 13, y: 15 }, { x: 13, y: 28 }, { x: 13, y: 41 }, { x: 13, y: 55 }, { x: 13, y: 68 },
+    { x: 13, y: 81 }, { x: 13, y: 94 }, { x: 25, y: 94 }, { x: 38, y: 94 }, { x: 50, y: 94 },
+    { x: 62, y: 94 }, { x: 75, y: 94 }, { x: 87, y: 94 }, { x: 100, y: 94 }, { x: 100, y: 81 },
+    { x: 100, y: 68 }, { x: 87, y: 68 }, { x: 75, y: 68 }, { x: 62, y: 68 }, { x: 50, y: 68 },
+    { x: 50, y: 55 }, { x: 50, y: 41 }, { x: 62, y: 41 }, { x: 75, y: 41 }, { x: 87, y: 41 },
+    { x: 87, y: 20 }
 ];
 
 // ================= Variáveis de Estado =================
-let turnoAtual = 1; // 1 = Sapo, 2 = Arara
+let turnoAtual = 1;
 let posJogador1 = 0;
 let posJogador2 = 0;
 let valorDadoSorteado = 0;
-let bloqueado = false; // Impede duplo clique no dado
+let bloqueado = false;
 
 // ================= Elementos da DOM =================
 const jogador1El = document.getElementById('jogador1');
 const jogador2El = document.getElementById('jogador2');
-const btnGirar = document.getElementById('btnGirar');
+const btnGirar = document.getElementById('btn-girar');
 const dadoValor = document.getElementById('dado-valor');
 const nomeJogador = document.getElementById('nome-jogador');
 const modalPergunta = document.getElementById('modal-pergunta');
 const textoPergunta = document.getElementById('texto-pergunta');
 const opcoesContainer = document.getElementById('opcoes-container');
+const telaInicio = document.getElementById('tela-inicio');
+const telaFim = document.getElementById('tela-fim');
 
-// ================= Inicialização e Tela Cheia =================
+// ================= Iniciar, Resetar e Tela Cheia =================
 function iniciarJogo() {
-    document.getElementById('tela-inicio').classList.add('escondido');
+    telaInicio.classList.add('escondido');
     atualizarPosicaoPersonagens();
+    
+    // Ativa Tela Cheia Automaticamente
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+            console.log(`Erro de tela cheia: ${err.message}`);
+        });
+    }
+}
+
+function resetarJogo() {
+    posJogador1 = 0;
+    posJogador2 = 0;
+    turnoAtual = 1;
+    bloqueado = false;
+    bancoPerguntas = [...perguntasIniciais];
+    nomeJogador.innerText = "Sapo";
+    nomeJogador.style.color = "#4caf50";
+    dadoValor.innerText = "?";
+    
+    atualizarPosicaoPersonagens();
+    telaInicio.classList.remove('escondido');
+    telaFim.classList.add('escondido');
+    modalPergunta.classList.add('escondido');
+
+    // Sai da tela cheia ao voltar para o menu
+    if (document.fullscreenElement) {
+        document.exitFullscreen().catch(err => console.log(err));
+    }
 }
 
 document.getElementById('btn-iniciar').addEventListener('click', iniciarJogo);
-document.getElementById('btn-reiniciar').addEventListener('click', () => location.reload());
-
-function toggleFullScreen() {
-    if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(err => {
-            console.log(`Erro ao tentar modo tela cheia: ${err.message}`);
-        });
-    } else {
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
-        }
-    }
-}
-document.getElementById('btn-tela-cheia-inicio').addEventListener('click', toggleFullScreen);
-document.getElementById('btn-fullscreen-jogo').addEventListener('click', toggleFullScreen);
+document.getElementById('btn-voltar-inicio').addEventListener('click', resetarJogo);
+document.getElementById('btn-reiniciar').addEventListener('click', resetarJogo);
 
 // ================= Lógica do Tabuleiro =================
 function atualizarPosicaoPersonagens() {
-    // Sapo
     const coord1 = coordenadas[posJogador1];
-    jogador1El.style.left = `calc(${coord1.x}% - 15px)`; // -15px para afastar um do outro na mesma casa
+    jogador1El.style.left = `calc(${coord1.x}% - 15px)`;
     jogador1El.style.top = `${coord1.y}%`;
 
-    // Arara
     const coord2 = coordenadas[posJogador2];
-    jogador2El.style.left = `calc(${coord2.x}% + 15px)`; // +15px para o outro lado
+    jogador2El.style.left = `calc(${coord2.x}% + 15px)`;
     jogador2El.style.top = `${coord2.y}%`;
 }
 
 // ================= Lógica do Turno e Dado =================
-document.getElementById('btn-girar').addEventListener('click', () => {
+btnGirar.addEventListener('click', () => {
     if (bloqueado) return;
     bloqueado = true;
 
-    // Sorteia de 1 a 3
     valorDadoSorteado = Math.floor(Math.random() * 3) + 1;
     
-    // Efeito simples de girar o dado
     let tempo = 0;
     let intervalo = setInterval(() => {
         dadoValor.innerText = Math.floor(Math.random() * 3) + 1;
@@ -144,7 +134,7 @@ document.getElementById('btn-girar').addEventListener('click', () => {
 function passarTurno() {
     turnoAtual = turnoAtual === 1 ? 2 : 1;
     nomeJogador.innerText = turnoAtual === 1 ? "Sapo" : "Arara";
-    nomeJogador.style.color = turnoAtual === 1 ? "#4caf50" : "#2196F3"; // Verde ou Azul
+    nomeJogador.style.color = turnoAtual === 1 ? "#4caf50" : "#2196F3";
     dadoValor.innerText = "?";
     bloqueado = false;
 }
@@ -152,22 +142,16 @@ function passarTurno() {
 // ================= Lógica das Perguntas =================
 function abrirPergunta() {
     if (bancoPerguntas.length === 0) {
-        // Recarrega as perguntas se acabarem
         bancoPerguntas = [...perguntasIniciais]; 
     }
 
-    // Puxa uma pergunta aleatória
     const indexSorteado = Math.floor(Math.random() * bancoPerguntas.length);
     const questao = bancoPerguntas[indexSorteado];
-    
-    // Remove do banco temporário
     bancoPerguntas.splice(indexSorteado, 1);
 
-    // Configura o modal
     textoPergunta.innerText = questao.p;
     opcoesContainer.innerHTML = '';
 
-    // Cria array com a certa e as erradas, e depois embaralha
     let alternativas = [
         { texto: questao.c, correta: true },
         { texto: questao.e[0], correta: false },
@@ -187,7 +171,6 @@ function abrirPergunta() {
 }
 
 function verificarResposta(botaoClicado, isCorreta) {
-    // Desabilita todos os botões para não clicar de novo
     const botoes = document.querySelectorAll('.btn-opcao');
     botoes.forEach(b => b.disabled = true);
 
@@ -199,11 +182,6 @@ function verificarResposta(botaoClicado, isCorreta) {
         }, 1500);
     } else {
         botaoClicado.classList.add('opcao-errada');
-        // Pinta a certa de verde para o jogador aprender
-        botoes.forEach(b => {
-            // Checa no array de alternativas iniciais pelo texto se era a correta (via lógica simples)
-            // Aqui simplificamos marcando a que ele clicou de vermelho e aguardamos
-        });
         setTimeout(() => {
             modalPergunta.classList.add('escondido');
             passarTurno();
@@ -229,16 +207,15 @@ function moverJogador() {
             clearInterval(moverInterval);
             verificarVitoria();
         }
-    }, 500); // 500ms entre pular cada casa para efeito de jogo de tabuleiro
+    }, 500);
 }
 
 function verificarVitoria() {
     if (posJogador1 >= 25 || posJogador2 >= 25) {
         const vencedor = posJogador1 >= 25 ? "Sapo" : "Arara";
         document.getElementById('texto-vencedor').innerText = `${vencedor} Venceu!`;
-        document.getElementById('tela-fim').classList.remove('escondido');
+        telaFim.classList.remove('escondido');
     } else {
         passarTurno();
     }
 }
-

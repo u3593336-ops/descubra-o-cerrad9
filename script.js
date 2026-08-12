@@ -63,17 +63,36 @@ const opcoesContainer = document.getElementById('opcoes-container');
 const telaInicio = document.getElementById('tela-inicio');
 const telaFim = document.getElementById('tela-fim');
 
-// ================= Iniciar, Resetar e Tela Cheia =================
+// ================= Sistema Anti-Travamento (Tela Cheia) =================
+function ativarTelaCheiaSegura() {
+    try {
+        const el = document.documentElement;
+        const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+        if (req) {
+            // O catch impede que o jogo congele se o navegador recusar a tela cheia
+            req.call(el).catch(err => console.warn("Tela cheia bloqueada:", err));
+        }
+    } catch (error) {
+        console.warn("Modo anônimo ou navegador restrito detectado. Jogando no modo janela.");
+    }
+}
+
+function sairTelaCheiaSegura() {
+    try {
+        const exit = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+        if (exit && document.fullscreenElement) {
+            exit.call(document).catch(err => console.warn(err));
+        }
+    } catch (error) {
+        // Ignora erros ao tentar sair
+    }
+}
+
+// ================= Iniciar, Resetar =================
 function iniciarJogo() {
     telaInicio.classList.add('escondido');
     atualizarPosicaoPersonagens();
-    
-    // Ativa Tela Cheia Automaticamente
-    if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(err => {
-            console.log(`Erro de tela cheia: ${err.message}`);
-        });
-    }
+    ativarTelaCheiaSegura();
 }
 
 function resetarJogo() {
@@ -90,11 +109,8 @@ function resetarJogo() {
     telaInicio.classList.remove('escondido');
     telaFim.classList.add('escondido');
     modalPergunta.classList.add('escondido');
-
-    // Sai da tela cheia ao voltar para o menu
-    if (document.fullscreenElement) {
-        document.exitFullscreen().catch(err => console.log(err));
-    }
+    
+    sairTelaCheiaSegura();
 }
 
 document.getElementById('btn-iniciar').addEventListener('click', iniciarJogo);
@@ -104,11 +120,11 @@ document.getElementById('btn-reiniciar').addEventListener('click', resetarJogo);
 // ================= Lógica do Tabuleiro =================
 function atualizarPosicaoPersonagens() {
     const coord1 = coordenadas[posJogador1];
-    jogador1El.style.left = `calc(${coord1.x}% - 15px)`;
+    jogador1El.style.left = `calc(${coord1.x}% - 12px)`;
     jogador1El.style.top = `${coord1.y}%`;
 
     const coord2 = coordenadas[posJogador2];
-    jogador2El.style.left = `calc(${coord2.x}% + 15px)`;
+    jogador2El.style.left = `calc(${coord2.x}% + 12px)`;
     jogador2El.style.top = `${coord2.y}%`;
 }
 

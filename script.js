@@ -35,35 +35,35 @@ const perguntasIniciais = [
 let bancoPerguntas = [...perguntasIniciais]; 
 
 // ================= Coordenadas Corrigidas do Tabuleiro (%) =================
-// Calculadas perfeitamente para encaixar no centro de cada bloco (total 27 passos)
+// Baseadas em uma matemática de grade perfeita (8 colunas x 6 linhas)
 const coordenadas = [
-    { x: 13.5, y: 30.0 }, // 0: Start
-    { x: 13.5, y: 43.5 }, // 1
-    { x: 13.5, y: 56.5 }, // 2
-    { x: 13.5, y: 70.0 }, // 3
-    { x: 13.5, y: 83.5 }, // 4
-    { x: 13.5, y: 96.5 }, // 5: Curva inferior esquerda
-    { x: 24.5, y: 96.5 }, // 6
-    { x: 35.0, y: 96.5 }, // 7
-    { x: 45.8, y: 96.5 }, // 8
-    { x: 56.5, y: 96.5 }, // 9
-    { x: 67.2, y: 96.5 }, // 10
-    { x: 78.0, y: 96.5 }, // 11
-    { x: 88.8, y: 96.5 }, // 12: Curva inferior direita
-    { x: 88.8, y: 83.5 }, // 13
-    { x: 88.8, y: 70.0 }, // 14: Curva meio-direita
-    { x: 78.0, y: 70.0 }, // 15
-    { x: 67.2, y: 70.0 }, // 16
-    { x: 56.5, y: 70.0 }, // 17
-    { x: 45.8, y: 70.0 }, // 18: Curva meio-esquerda
-    { x: 45.8, y: 56.5 }, // 19
-    { x: 45.8, y: 43.5 }, // 20: Curva centro-topo
-    { x: 56.5, y: 43.5 }, // 21
-    { x: 67.2, y: 43.5 }, // 22
-    { x: 78.0, y: 43.5 }, // 23
-    { x: 88.8, y: 43.5 }, // 24: Curva topo-direita
-    { x: 88.8, y: 30.0 }, // 25
-    { x: 88.8, y: 16.5 }  // 26: CHEGADA Final
+    { x: 12.5, y: 24.0 }, // 0: Start (Quadrado amarelo sob a placa)
+    { x: 12.5, y: 36.3 }, // 1
+    { x: 12.5, y: 48.6 }, // 2
+    { x: 12.5, y: 60.9 }, // 3
+    { x: 12.5, y: 73.2 }, // 4
+    { x: 12.5, y: 85.5 }, // 5: Curva inferior esquerda
+    { x: 23.2, y: 85.5 }, // 6
+    { x: 33.9, y: 85.5 }, // 7
+    { x: 44.6, y: 85.5 }, // 8
+    { x: 55.3, y: 85.5 }, // 9
+    { x: 66.0, y: 85.5 }, // 10
+    { x: 76.7, y: 85.5 }, // 11
+    { x: 87.5, y: 85.5 }, // 12: Curva inferior direita (Onde ocorreu o erro na foto!)
+    { x: 87.5, y: 73.2 }, // 13
+    { x: 87.5, y: 60.9 }, // 14: Curva direita meio
+    { x: 76.7, y: 60.9 }, // 15
+    { x: 66.0, y: 60.9 }, // 16
+    { x: 55.3, y: 60.9 }, // 17
+    { x: 44.6, y: 60.9 }, // 18: Curva esquerda meio
+    { x: 44.6, y: 48.6 }, // 19
+    { x: 44.6, y: 36.3 }, // 20: Curva centro topo
+    { x: 55.3, y: 36.3 }, // 21
+    { x: 66.0, y: 36.3 }, // 22
+    { x: 76.7, y: 36.3 }, // 23
+    { x: 87.5, y: 36.3 }, // 24: Curva direita topo
+    { x: 87.5, y: 24.0 }, // 25
+    { x: 87.5, y: 11.7 }  // 26: CHEGADA (Final)
 ];
 
 // ================= Variáveis de Estado =================
@@ -123,14 +123,12 @@ function voltarAoMenu() {
     resetarValoresJogo();
     telaInicio.classList.remove('escondido');
     telaFim.classList.add('escondido');
-    // Nota: Removido propositalmente o sair da tela cheia para evitar o erro relatado
 }
 
 function jogarNovamente() {
     resetarValoresJogo();
     telaFim.classList.add('escondido');
     telaInicio.classList.add('escondido'); 
-    // Vai direto para o tabuleiro já jogando e não quebra a tela cheia
 }
 
 document.getElementById('btn-iniciar').addEventListener('click', iniciarJogo);
@@ -138,16 +136,26 @@ document.getElementById('btn-voltar-inicio').addEventListener('click', voltarAoM
 document.getElementById('btn-voltar-menu').addEventListener('click', voltarAoMenu);
 document.getElementById('btn-reiniciar').addEventListener('click', jogarNovamente);
 
-// ================= Lógica do Tabuleiro =================
+// ================= Lógica Perfeita do Tabuleiro =================
 function atualizarPosicaoPersonagens() {
     const coord1 = coordenadas[posJogador1];
-    // Offset baseado em % garante que não vão sair do grid em nenhuma tela
-    jogador1El.style.left = `calc(${coord1.x}% - 2%)`;
-    jogador1El.style.top = `${coord1.y}%`;
-
     const coord2 = coordenadas[posJogador2];
-    jogador2El.style.left = `calc(${coord2.x}% + 2%)`;
-    jogador2El.style.top = `${coord2.y}%`;
+
+    // Se estiverem na mesma casa, eles se dividem na diagonal para caber no quadrado
+    if (posJogador1 === posJogador2) {
+        jogador1El.style.left = `calc(${coord1.x}% - 1.5%)`;
+        jogador1El.style.top = `calc(${coord1.y}% + 1.5%)`;
+
+        jogador2El.style.left = `calc(${coord2.x}% + 1.5%)`;
+        jogador2El.style.top = `calc(${coord2.y}% - 1.5%)`;
+    } else {
+        // Se estiverem em casas diferentes, ficam EXATAMENTE no centro do bloco
+        jogador1El.style.left = `${coord1.x}%`;
+        jogador1El.style.top = `${coord1.y}%`;
+
+        jogador2El.style.left = `${coord2.x}%`;
+        jogador2El.style.top = `${coord2.y}%`;
+    }
 }
 
 // ================= Lógica do Turno e Dado =================

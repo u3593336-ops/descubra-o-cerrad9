@@ -34,14 +34,36 @@ const perguntasIniciais = [
 
 let bancoPerguntas = [...perguntasIniciais]; 
 
-// ================= Coordenadas do Tabuleiro (%) =================
+// ================= Coordenadas Corrigidas do Tabuleiro (%) =================
+// Calculadas perfeitamente para encaixar no centro de cada bloco (total 27 passos)
 const coordenadas = [
-    { x: 13, y: 15 }, { x: 13, y: 28 }, { x: 13, y: 41 }, { x: 13, y: 55 }, { x: 13, y: 68 },
-    { x: 13, y: 81 }, { x: 13, y: 94 }, { x: 25, y: 94 }, { x: 38, y: 94 }, { x: 50, y: 94 },
-    { x: 62, y: 94 }, { x: 75, y: 94 }, { x: 87, y: 94 }, { x: 100, y: 94 }, { x: 100, y: 81 },
-    { x: 100, y: 68 }, { x: 87, y: 68 }, { x: 75, y: 68 }, { x: 62, y: 68 }, { x: 50, y: 68 },
-    { x: 50, y: 55 }, { x: 50, y: 41 }, { x: 62, y: 41 }, { x: 75, y: 41 }, { x: 87, y: 41 },
-    { x: 87, y: 20 }
+    { x: 13.5, y: 30.0 }, // 0: Start
+    { x: 13.5, y: 43.5 }, // 1
+    { x: 13.5, y: 56.5 }, // 2
+    { x: 13.5, y: 70.0 }, // 3
+    { x: 13.5, y: 83.5 }, // 4
+    { x: 13.5, y: 96.5 }, // 5: Curva inferior esquerda
+    { x: 24.5, y: 96.5 }, // 6
+    { x: 35.0, y: 96.5 }, // 7
+    { x: 45.8, y: 96.5 }, // 8
+    { x: 56.5, y: 96.5 }, // 9
+    { x: 67.2, y: 96.5 }, // 10
+    { x: 78.0, y: 96.5 }, // 11
+    { x: 88.8, y: 96.5 }, // 12: Curva inferior direita
+    { x: 88.8, y: 83.5 }, // 13
+    { x: 88.8, y: 70.0 }, // 14: Curva meio-direita
+    { x: 78.0, y: 70.0 }, // 15
+    { x: 67.2, y: 70.0 }, // 16
+    { x: 56.5, y: 70.0 }, // 17
+    { x: 45.8, y: 70.0 }, // 18: Curva meio-esquerda
+    { x: 45.8, y: 56.5 }, // 19
+    { x: 45.8, y: 43.5 }, // 20: Curva centro-topo
+    { x: 56.5, y: 43.5 }, // 21
+    { x: 67.2, y: 43.5 }, // 22
+    { x: 78.0, y: 43.5 }, // 23
+    { x: 88.8, y: 43.5 }, // 24: Curva topo-direita
+    { x: 88.8, y: 30.0 }, // 25
+    { x: 88.8, y: 16.5 }  // 26: CHEGADA Final
 ];
 
 // ================= Variáveis de Estado =================
@@ -50,6 +72,7 @@ let posJogador1 = 0;
 let posJogador2 = 0;
 let valorDadoSorteado = 0;
 let bloqueado = false;
+const casaFinal = coordenadas.length - 1;
 
 // ================= Elementos da DOM =================
 const jogador1El = document.getElementById('jogador1');
@@ -69,33 +92,21 @@ function ativarTelaCheiaSegura() {
         const el = document.documentElement;
         const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
         if (req) {
-            // O catch impede que o jogo congele se o navegador recusar a tela cheia
             req.call(el).catch(err => console.warn("Tela cheia bloqueada:", err));
         }
     } catch (error) {
-        console.warn("Modo anônimo ou navegador restrito detectado. Jogando no modo janela.");
+        console.warn("Navegador não suporta tela cheia forçada.");
     }
 }
 
-function sairTelaCheiaSegura() {
-    try {
-        const exit = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
-        if (exit && document.fullscreenElement) {
-            exit.call(document).catch(err => console.warn(err));
-        }
-    } catch (error) {
-        // Ignora erros ao tentar sair
-    }
-}
-
-// ================= Iniciar, Resetar =================
+// ================= Iniciar e Resetar =================
 function iniciarJogo() {
     telaInicio.classList.add('escondido');
     atualizarPosicaoPersonagens();
     ativarTelaCheiaSegura();
 }
 
-function resetarJogo() {
+function resetarValoresJogo() {
     posJogador1 = 0;
     posJogador2 = 0;
     turnoAtual = 1;
@@ -104,27 +115,38 @@ function resetarJogo() {
     nomeJogador.innerText = "Sapo";
     nomeJogador.style.color = "#4caf50";
     dadoValor.innerText = "?";
-    
     atualizarPosicaoPersonagens();
+    modalPergunta.classList.add('escondido');
+}
+
+function voltarAoMenu() {
+    resetarValoresJogo();
     telaInicio.classList.remove('escondido');
     telaFim.classList.add('escondido');
-    modalPergunta.classList.add('escondido');
-    
-    sairTelaCheiaSegura();
+    // Nota: Removido propositalmente o sair da tela cheia para evitar o erro relatado
+}
+
+function jogarNovamente() {
+    resetarValoresJogo();
+    telaFim.classList.add('escondido');
+    telaInicio.classList.add('escondido'); 
+    // Vai direto para o tabuleiro já jogando e não quebra a tela cheia
 }
 
 document.getElementById('btn-iniciar').addEventListener('click', iniciarJogo);
-document.getElementById('btn-voltar-inicio').addEventListener('click', resetarJogo);
-document.getElementById('btn-reiniciar').addEventListener('click', resetarJogo);
+document.getElementById('btn-voltar-inicio').addEventListener('click', voltarAoMenu);
+document.getElementById('btn-voltar-menu').addEventListener('click', voltarAoMenu);
+document.getElementById('btn-reiniciar').addEventListener('click', jogarNovamente);
 
 // ================= Lógica do Tabuleiro =================
 function atualizarPosicaoPersonagens() {
     const coord1 = coordenadas[posJogador1];
-    jogador1El.style.left = `calc(${coord1.x}% - 12px)`;
+    // Offset baseado em % garante que não vão sair do grid em nenhuma tela
+    jogador1El.style.left = `calc(${coord1.x}% - 2%)`;
     jogador1El.style.top = `${coord1.y}%`;
 
     const coord2 = coordenadas[posJogador2];
-    jogador2El.style.left = `calc(${coord2.x}% + 12px)`;
+    jogador2El.style.left = `calc(${coord2.x}% + 2%)`;
     jogador2El.style.top = `${coord2.y}%`;
 }
 
@@ -211,7 +233,7 @@ function moverJogador() {
     let posAtual = turnoAtual === 1 ? posJogador1 : posJogador2;
 
     let moverInterval = setInterval(() => {
-        if (passosDados < valorDadoSorteado && posAtual < 25) {
+        if (passosDados < valorDadoSorteado && posAtual < casaFinal) {
             posAtual++;
             passosDados++;
             
@@ -227,9 +249,9 @@ function moverJogador() {
 }
 
 function verificarVitoria() {
-    if (posJogador1 >= 25 || posJogador2 >= 25) {
-        const vencedor = posJogador1 >= 25 ? "Sapo" : "Arara";
-        document.getElementById('texto-vencedor').innerText = `${vencedor} Venceu!`;
+    if (posJogador1 >= casaFinal || posJogador2 >= casaFinal) {
+        const vencedor = posJogador1 >= casaFinal ? "Sapo" : "Arara";
+        document.getElementById('texto-vencedor').innerText = `O Vencedor foi: ${vencedor}!`;
         telaFim.classList.remove('escondido');
     } else {
         passarTurno();

@@ -2,428 +2,55 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Descubra o Cerrado</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-        }
-
-        body, html {
-            width: 100%;
-            height: 100%;
-            background-color: #111;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            font-family: 'Courier New', Courier, monospace;
-        }
-
-        #game-container {
-            position: relative;
-            width: 1000px;
-            height: 562px;
-            background-image: url('fundo.png');
-            background-size: cover;
-            background-position: center;
-            box-shadow: 0 0 20px rgba(0,0,0,0.8);
-        }
-
-        /* UI Painel Superior */
-        #top-panel {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 60px;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-            z-index: 10;
-        }
-
-        #turno-display {
-            color: #fff;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        #btn-girar {
-            background-color: #27ae60;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 18px;
-            font-family: inherit;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 5px;
-            box-shadow: 0 4px #1e8449;
-            transition: 0.1s;
-        }
-
-        #btn-girar:active {
-            transform: translateY(4px);
-            box-shadow: 0 0 #1e8449;
-        }
-
-        #btn-girar:disabled {
-            background-color: #7f8c8d;
-            box-shadow: none;
-            cursor: not-allowed;
-        }
-
-        /* Personagens */
-        .token {
-            position: absolute;
-            width: 45px;
-            height: 45px;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            transition: all 0.4s ease-in-out;
-            z-index: 5;
-        }
-
-        #sapo {
-            background-image: url('sapo.png');
-        }
-
-        #arara {
-            background-image: url('arara.png');
-        }
-
-        /* Modal de Perguntas */
-        #modal-pergunta {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-        }
-
-        .modal-content {
-            background: #f4d03f;
-            padding: 30px;
-            border-radius: 10px;
-            width: 600px;
-            text-align: center;
-            border: 4px solid #b7950b;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-        }
-
-        .modal-content h2 {
-            margin-bottom: 20px;
-            color: #7d6608;
-            font-size: 22px;
-        }
-
-        .opcao-btn {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            background: #f39c12;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            font-family: inherit;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-            box-shadow: 0 3px #d68910;
-        }
-
-        .opcao-btn:hover {
-            background: #e67e22;
-        }
-
-        /* Tela de Vitória */
-        #tela-vitoria {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.85);
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 200;
-            color: white;
-        }
-
-        #tela-vitoria h1 {
-            font-size: 48px;
-            color: #f1c40f;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px #900c3f;
-        }
-
-        .vitoria-btns {
-            display: flex;
-            gap: 20px;
-        }
-
-        .vitoria-btns button {
-            padding: 12px 25px;
-            font-size: 18px;
-            font-family: inherit;
-            font-weight: bold;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            box-shadow: 0 4px rgba(0,0,0,0.3);
-        }
-
-        #btn-reiniciar {
-            background-color: #27ae60;
-            color: white;
-        }
-
-        #btn-voltar {
-            background-color: #c0392b;
-            color: white;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div id="game-container">
-    <div id="top-panel">
-        <div id="turno-display">Vez do: Sapo</div>
-        <button id="btn-girar" onclick="girarDado()">GIRAR DADO</button>
-    </div>
-
-    <div id="sapo" class="token"></div>
-    <div id="arara" class="token"></div>
-
-    <div id="modal-pergunta">
-        <div class="modal-content">
-            <h2 id="pergunta-texto">Carregando pergunta...</h2>
-            <div id="opcoes-container"></div>
+    <div id="tela-inicio" class="tela-overlay">
+        <div class="conteudo-inicio">
+            <h1>Descubra o Cerrado</h1>
+            <p>Jogue com o Sapo ou a Arara, responda às perguntas e chegue ao final do tabuleiro!</p>
+            <button id="btn-iniciar" class="btn-pixel">JOGAR</button>
         </div>
     </div>
 
-    <div id="tela-vitoria">
-        <h1 id="vencedor-texto">Parabéns!</h1>
-        <div class="vitoria-btns">
-            <button id="btn-reiniciar" onclick="reiniciarJogo()">Jogar Novamente</button>
-            <button id="btn-voltar" onclick="voltarPagina()">Voltar</button>
+    <div id="tela-fim" class="tela-overlay escondido">
+        <div class="conteudo-inicio">
+            <h1 id="texto-vencedor">Temos um Vencedor!</h1>
+            <button id="btn-reiniciar" class="btn-pixel">JOGAR NOVAMENTE</button>
         </div>
     </div>
-</div>
 
-<script>
-    // Mapeamento exato de coordenadas (X, Y) para cada uma das 26 casas do tabuleiro (Saída = 0 até Chegada = 25)
-    const caminhoCasas = [
-        {x: 105, y: 88},   // 0 (Saída / Início)
-        {x: 105, y: 168},  // 1
-        {x: 105, y: 245},  // 2
-        {x: 105, y: 325},  // 3
-        {x: 105, y: 405},  // 4
-        {x: 105, y: 485},  // 5
-        {x: 185, y: 485},  // 6
-        {x: 265, y: 485},  // 7
-        {x: 350, y: 485},  // 8
-        {x: 435, y: 485},  // 9
-        {x: 520, y: 485},  // 10
-        {x: 605, y: 485},  // 11
-        {x: 690, y: 485},  // 12
-        {x: 775, y: 485},  // 13
-        {x: 855, y: 485},  // 14
-        {x: 855, y: 405},  // 15
-        {x: 855, y: 325},  // 16
-        {x: 775, y: 325},  // 17
-        {x: 690, y: 325},  // 18
-        {x: 605, y: 325},  // 19
-        {x: 520, y: 325},  // 20
-        {x: 520, y: 245},  // 21
-        {x: 520, y: 168},  // 22
-        {x: 775, y: 168},  // 23
-        {x: 855, y: 168},  // 24
-        {x: 855, y: 88}    // 25 (Chegada)
-    ];
+    <main id="jogo-container">
+        
+        <div id="painel-controle">
+            <div id="turno-indicador">
+                Vez do: <strong id="nome-jogador">Sapo</strong>
+            </div>
+            <div id="dado-container">
+                <div id="dado-valor">?</div>
+                <button id="btn-girar" class="btn-pixel">GIRAR DADO</button>
+            </div>
+            <button id="btn-voltar-inicio" class="btn-pixel btn-secundario">VOLTAR</button>
+        </div>
 
-    const bancoPerguntas = [
-        {
-            pergunta: "Qual é considerado o coração do Cerrado devido à sua biodiversidade?",
-            correta: "Chapada dos Veadeiros",
-            erradas: ["Floresta Amazônica", "Pampa Gaúcho"]
-        },
-        {
-            pergunta: "Qual destas árvores é famosa por sua casca grossa e troncos retorcidos no Cerrado?",
-            correta: "Ipê-amarelo e Pequizeiro",
-            erradas: ["Pinheiro do Paraná", "Coqueiro praiano"]
-        },
-        {
-            pergunta: "O Lobo-guará possui uma característica marcante em sua pelagem. Qual é?",
-            correta: "Pernas longas e pretas",
-            erradas: ["Manchas pretas pelo corpo", "Cauda curta e grossa"]
-        },
-        {
-            pergunta: "Qual animal típico do Cerrado cava buracos e se enrola em uma bola quando ameaçado?",
-            correta: "Tatu-bola",
-            erradas: ["Tamanduá-bandeira", "Onça-pintada"]
-        },
-        {
-            pergunta: "O Cerrado é conhecido como:",
-            correta: "A caixa d'água do Brasil",
-            erradas: ["O deserto verde", "A maior floresta contínua"]
-        }
-    ];
+        <div id="tabuleiro">
+            <img src="./sapo.png" id="jogador1" class="sprite" alt="Sapo">
+            <img src="./arara.png" id="jogador2" class="sprite" alt="Arara">
+        </div>
 
-    let jogadorAtual = 0; // 0 = Sapo, 1 = Arara
-    let posicoes = [0, 0];
-    let dadoAtual = 0;
-    let perguntaAtualObj = null;
+    </main>
 
-    const tokenSapo = document.getElementById('sapo');
-    const tokenArara = document.getElementById('arara');
-    const turnoDisplay = document.getElementById('turno-display');
-    const btnGirar = document.getElementById('btn-girar');
-    const modalPergunta = document.getElementById('modal-pergunta');
-    const perguntaTexto = document.getElementById('pergunta-texto');
-    const opcoesContainer = document.getElementById('opcoes-container');
-    const telaVitoria = document.getElementById('tela-vitoria');
-    const vencedorTexto = document.getElementById('vencedor-texto');
+    <div id="modal-pergunta" class="escondido">
+        <div class="modal-conteudo">
+            <h2 id="texto-pergunta">Pergunta vai aqui?</h2>
+            <div id="opcoes-container">
+                </div>
+        </div>
+    </div>
 
-    function atualizarPosicoesNaTela() {
-        // Offset leve para os personagens não ficarem 100% sobrepostos na mesma casa
-        const offsetSapoX = -12;
-        const offsetAraraX = 12;
-
-        const posSapo = caminhoCasas[posicoes[0]];
-        tokenSapo.style.left = (posSapo.x + offsetSapoX) + 'px';
-        tokenSapo.style.top = (posSapo.y - 22) + 'px';
-
-        const posArara = caminhoCasas[posicoes[1]];
-        tokenArara.style.left = (posArara.x + offsetAraraX) + 'px';
-        tokenArara.style.top = (posArara.y - 22) + 'px';
-    }
-
-    function girarDado() {
-        btnGirar.disabled = true;
-        dadoAtual = Math.floor(Math.random() * 3) + 1; // Sorteia entre 1 e 3
-        btnGirar.innerText = `DADO: ${dadoAtual}`;
-
-        setTimeout(() => {
-            abrirPergunta();
-        }, 800);
-    }
-
-    function abrirPergunta() {
-        // Escolher pergunta aleatória
-        const randomIndex = Math.floor(Math.random() * bancoPerguntas.length);
-        perguntaAtualObj = bancoPerguntas[randomIndex];
-
-        perguntaTexto.innerText = perguntaAtualObj.pergunta;
-        opcoesContainer.innerHTML = '';
-
-        // Misturar respostas (2 erradas + 1 certa)
-        let alternativas = [...perguntaAtualObj.erradas, perguntaAtualObj.correta];
-        alternativas.sort(() => Math.random() - 0.5);
-
-        alternativas.forEach(alt => {
-            const btn = document.createElement('button');
-            btn.className = 'opcao-btn';
-            btn.innerText = alt;
-            btn.onclick = () => verificarResposta(alt);
-            opcoesContainer.appendChild(btn);
-        });
-
-        modalPergunta.style.display = 'flex';
-    }
-
-    function verificarResposta(respostaEscolhida) {
-        modalPergunta.style.display = 'none';
-
-        if (respostaEscolhida === perguntaAtualObj.correta) {
-            // Acertou: avança o número tirado no dado
-            moverJogador(dadoAtual);
-        } else {
-            // Errou: passa a vez
-            trocarTurno();
-        }
-    }
-
-    function moverJogador(passos) {
-        let novaPosicao = posicoes[jogadorAtual] + passos;
-        if (novaPosicao >= caminhoCasas.length - 1) {
-            novaPosicao = caminhoCasas.length - 1;
-            posicoes[jogadorAtual] = novaPosicao;
-            atualizarPosicoesNaTela();
-            finalizarJogo();
-            return;
-        }
-
-        posicoes[jogadorAtual] = novaPosicao;
-        atualizarPosicoesNaTela();
-
-        // Checar vitória após o movimento
-        if (posicoes[jogadorAtual] >= caminhoCasas.length - 1) {
-            finalizarJogo();
-        } else {
-            trocarTurno();
-        }
-    }
-
-    function trocarTurno() {
-        jogadorAtual = jogadorAtual === 0 ? 1 : 0;
-        const nomeJogador = jogadorAtual === 0 ? "Sapo" : "Arara";
-        turnoDisplay.innerText = `Vez do: ${nomeJogador}`;
-        btnGirar.innerText = "GIRAR DADO";
-        btnGirar.disabled = false;
-    }
-
-    function finalizarJogo() {
-        const nomeVencedor = jogadorAtual === 0 ? "Sapo" : "Arara";
-        vencedorTexto.innerText = `O ${nomeVencedor} Venceu o Jogo!`;
-        telaVitoria.style.display = 'flex';
-    }
-
-    function reiniciarJogo() {
-        posicoes = [0, 0];
-        jogadorAtual = 0;
-        telaVitoria.style.display = 'none';
-        turnoDisplay.innerText = "Vez do: Sapo";
-        btnGirar.innerText = "GIRAR DADO";
-        btnGirar.disabled = false;
-        atualizarPosicoesNaTela();
-    }
-
-    function voltarPagina() {
-        // Garante manter tela cheia ou redireciona conforme histórico
-        if (document.fullscreenElement) {
-            document.exitFullscreen().catch(() => {});
-        }
-        window.history.back();
-    }
-
-    // Inicialização ao carregar a página
-    window.onload = () => {
-        atualizarPosicoesNaTela();
-        // Solicita modo tela cheia automático ou ao interagir
-        document.body.onclick = () => {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(() => {});
-            }
-        };
-    };
-</script>
-
+    <script src="script.js"></script>
 </body>
 </html>

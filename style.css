@@ -209,6 +209,7 @@ body, html {
 
 .btn-opcao {
     background-color: #ffcc80;
+    color: #000;
     border: 3px solid #ef6c00;
     padding: 12px;
     font-size: 10px;
@@ -224,13 +225,13 @@ body, html {
 .opcao-certa {
     background-color: #66bb6a !important;
     border-color: #2e7d32 !important;
-    color: white;
+    color: #000;
 }
 
 .opcao-errada {
     background-color: #ef5350 !important;
     border-color: #c62828 !important;
-    color: white;
+    color: #000;
 }
 
 @media (max-width: 600px) {

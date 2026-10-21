@@ -32,7 +32,31 @@ const perguntasIniciais = [
     { p: "Se você encontrasse lixo em uma área de Cerrado, qual seria a atitude mais adequada?", c: "Recolher de forma segura e dar a destinação correta ao resíduo", e: ["Enterrar o lixo no solo", "Jogá-lo em um rio próximo"] }
 ];
 
-let bancoPerguntas = [...perguntasIniciais]; 
+// ================= Embaralhamento das Perguntas =================
+// Embaralha uma lista de verdade (Fisher-Yates): todas as ordens têm a mesma chance
+function embaralhar(lista) {
+    const copia = [...lista];
+    for (let i = copia.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copia[i], copia[j]] = [copia[j], copia[i]];
+    }
+    return copia;
+}
+
+// Cria um baralho novo com as 30 perguntas em uma ordem diferente a cada vez
+function novoBaralho() {
+    const baralho = embaralhar(perguntasIniciais);
+
+    // Evita que a primeira pergunta do baralho novo seja igual à última que saiu
+    if (baralho.length > 1 && baralho[0] === ultimaPergunta) {
+        const j = 1 + Math.floor(Math.random() * (baralho.length - 1));
+        [baralho[0], baralho[j]] = [baralho[j], baralho[0]];
+    }
+    return baralho;
+}
+
+let ultimaPergunta = null;
+let bancoPerguntas = novoBaralho();
 
 // ================= Coordenadas Corrigidas do Tabuleiro (%) =================
 // Baseadas em uma matemática de grade perfeita (8 colunas x 6 linhas)
@@ -111,7 +135,7 @@ function resetarValoresJogo() {
     posJogador2 = 0;
     turnoAtual = 1;
     bloqueado = false;
-    bancoPerguntas = [...perguntasIniciais];
+    bancoPerguntas = novoBaralho(); // nova ordem de perguntas a cada partida
     nomeJogador.innerText = "Sapo";
     nomeJogador.style.color = "#4caf50";
     dadoValor.innerText = "?";
@@ -163,11 +187,11 @@ btnGirar.addEventListener('click', () => {
     if (bloqueado) return;
     bloqueado = true;
 
-    valorDadoSorteado = Math.floor(Math.random() * 3) + 1;
+    valorDadoSorteado = Math.floor(Math.random() * 5) + 1;
     
     let tempo = 0;
     let intervalo = setInterval(() => {
-        dadoValor.innerText = Math.floor(Math.random() * 3) + 1;
+        dadoValor.innerText = Math.floor(Math.random() * 5) + 1;
         tempo += 100;
         if (tempo >= 1000) {
             clearInterval(intervalo);
@@ -187,13 +211,14 @@ function passarTurno() {
 
 // ================= Lógica das Perguntas =================
 function abrirPergunta() {
+    // Quando as 30 perguntas acabam, embaralha de novo em outra ordem
     if (bancoPerguntas.length === 0) {
-        bancoPerguntas = [...perguntasIniciais]; 
+        bancoPerguntas = novoBaralho();
     }
 
-    const indexSorteado = Math.floor(Math.random() * bancoPerguntas.length);
-    const questao = bancoPerguntas[indexSorteado];
-    bancoPerguntas.splice(indexSorteado, 1);
+    // Pega a próxima pergunta do baralho embaralhado (sem repetir até acabarem)
+    const questao = bancoPerguntas.shift();
+    ultimaPergunta = questao;
 
     textoPergunta.innerText = questao.p;
     opcoesContainer.innerHTML = '';
@@ -203,7 +228,7 @@ function abrirPergunta() {
         { texto: questao.e[0], correta: false },
         { texto: questao.e[1], correta: false }
     ];
-    alternativas = alternativas.sort(() => Math.random() - 0.5);
+    alternativas = embaralhar(alternativas);
 
     alternativas.forEach(alt => {
         const btn = document.createElement('button');

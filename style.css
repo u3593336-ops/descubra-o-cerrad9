@@ -163,7 +163,7 @@ body, html {
 /* PERSONAGENS (SPRITES) */
 .sprite {
     position: absolute;
-    width: 5%;
+    width: 4%; /* cabe dentro do quadrado e permite 2 personagens lado a lado */
     height: auto;
     transition: all 0.4s ease-in-out;
     transform: translate(-50%, -50%);

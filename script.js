@@ -171,12 +171,12 @@ function atualizarPosicaoPersonagens() {
     const coord1 = coordenadas[posJogador1];
     const coord2 = coordenadas[posJogador2];
 
-    // Se estiverem na mesma casa, cada um fica em uma metade do quadrado (sem se tamparem)
+    // Se estiverem na mesma casa, ficam lado a lado (sem se tamparem), centralizados no quadrado
     if (posJogador1 === posJogador2) {
-        jogador1El.style.left = `${coord1.x - DESLOC_MESMA_CASA}%`;
+        jogador1El.style.left = `calc(${coord1.x}% - ${DESLOC_MESMA_CASA}%)`;
         jogador1El.style.top = `${coord1.y}%`;
 
-        jogador2El.style.left = `${coord2.x + DESLOC_MESMA_CASA}%`;
+        jogador2El.style.left = `calc(${coord2.x}% + ${DESLOC_MESMA_CASA}%)`;
         jogador2El.style.top = `${coord2.y}%`;
     } else {
         // Se estiverem em casas diferentes, ficam EXATAMENTE no centro do quadrado

@@ -58,37 +58,43 @@ function novoBaralho() {
 let ultimaPergunta = null;
 let bancoPerguntas = novoBaralho();
 
-// ================= Coordenadas Corrigidas do Tabuleiro (%) =================
-// Baseadas em uma matemática de grade perfeita (8 colunas x 6 linhas)
+// ================= Coordenadas Exatas do Tabuleiro (%) =================
+// Centro de cada um dos 27 quadrados, medido pixel a pixel na imagem do tabuleiro (fundo.jpg, 2576x1412).
+// x = % da largura do tabuleiro | y = % da altura do tabuleiro
 const coordenadas = [
-    { x: 12.5, y: 24.0 }, // 0: Start (Quadrado amarelo sob a placa)
-    { x: 12.5, y: 36.3 }, // 1
-    { x: 12.5, y: 48.6 }, // 2
-    { x: 12.5, y: 60.9 }, // 3
-    { x: 12.5, y: 73.2 }, // 4
-    { x: 12.5, y: 85.5 }, // 5: Curva inferior esquerda
-    { x: 23.2, y: 85.5 }, // 6
-    { x: 33.9, y: 85.5 }, // 7
-    { x: 44.6, y: 85.5 }, // 8
-    { x: 55.3, y: 85.5 }, // 9
-    { x: 66.0, y: 85.5 }, // 10
-    { x: 76.7, y: 85.5 }, // 11
-    { x: 87.5, y: 85.5 }, // 12: Curva inferior direita (Onde ocorreu o erro na foto!)
-    { x: 87.5, y: 73.2 }, // 13
-    { x: 87.5, y: 60.9 }, // 14: Curva direita meio
-    { x: 76.7, y: 60.9 }, // 15
-    { x: 66.0, y: 60.9 }, // 16
-    { x: 55.3, y: 60.9 }, // 17
-    { x: 44.6, y: 60.9 }, // 18: Curva esquerda meio
-    { x: 44.6, y: 48.6 }, // 19
-    { x: 44.6, y: 36.3 }, // 20: Curva centro topo
-    { x: 55.3, y: 36.3 }, // 21
-    { x: 66.0, y: 36.3 }, // 22
-    { x: 76.7, y: 36.3 }, // 23
-    { x: 87.5, y: 36.3 }, // 24: Curva direita topo
-    { x: 87.5, y: 24.0 }, // 25
-    { x: 87.5, y: 11.7 }  // 26: CHEGADA (Final)
+    { x: 13.47, y: 29.57 }, // 0: Start (Quadrado amarelo sob a placa)
+    { x: 13.47, y: 41.96 }, // 1
+    { x: 13.47, y: 54.21 }, // 2
+    { x: 13.51, y: 66.78 }, // 3
+    { x: 13.55, y: 79.36 }, // 4
+    { x: 13.37, y: 91.78 }, // 5: Curva inferior esquerda
+    { x: 23.41, y: 91.78 }, // 6
+    { x: 33.48, y: 91.78 }, // 7
+    { x: 43.26, y: 91.78 }, // 8
+    { x: 53.32, y: 91.78 }, // 9
+    { x: 63.53, y: 91.78 }, // 10
+    { x: 73.91, y: 91.78 }, // 11
+    { x: 84.53, y: 91.75 }, // 12: Curva inferior direita
+    { x: 84.53, y: 79.64 }, // 13
+    { x: 84.53, y: 67.32 }, // 14: Curva direita meio
+    { x: 73.89, y: 67.28 }, // 15
+    { x: 63.35, y: 67.32 }, // 16
+    { x: 52.70, y: 67.32 }, // 17
+    { x: 42.18, y: 67.28 }, // 18: Curva esquerda meio
+    { x: 42.12, y: 54.67 }, // 19
+    { x: 42.24, y: 42.14 }, // 20: Curva centro topo
+    { x: 52.72, y: 42.10 }, // 21
+    { x: 63.35, y: 42.10 }, // 22
+    { x: 74.09, y: 42.10 }, // 23
+    { x: 84.86, y: 42.10 }, // 24: Curva direita topo
+    { x: 85.83, y: 29.78 }, // 25
+    { x: 85.93, y: 17.85 }  // 26: CHEGADA (Final)
 ];
+
+// Quando os dois personagens param no MESMO quadrado, cada um ocupa uma metade dele
+// (Sapo na esquerda, Arara na direita), assim um nunca tampa o outro.
+// Valor = distância horizontal do centro do quadrado (em % da largura do tabuleiro).
+const DESLOC_MESMA_CASA = 2.2;
 
 // ================= Variáveis de Estado =================
 let turnoAtual = 1;
@@ -165,15 +171,15 @@ function atualizarPosicaoPersonagens() {
     const coord1 = coordenadas[posJogador1];
     const coord2 = coordenadas[posJogador2];
 
-    // Se estiverem na mesma casa, eles se dividem na diagonal para caber no quadrado
+    // Se estiverem na mesma casa, cada um fica em uma metade do quadrado (sem se tamparem)
     if (posJogador1 === posJogador2) {
-        jogador1El.style.left = `calc(${coord1.x}% - 1.5%)`;
-        jogador1El.style.top = `calc(${coord1.y}% + 1.5%)`;
+        jogador1El.style.left = `${coord1.x - DESLOC_MESMA_CASA}%`;
+        jogador1El.style.top = `${coord1.y}%`;
 
-        jogador2El.style.left = `calc(${coord2.x}% + 1.5%)`;
-        jogador2El.style.top = `calc(${coord2.y}% - 1.5%)`;
+        jogador2El.style.left = `${coord2.x + DESLOC_MESMA_CASA}%`;
+        jogador2El.style.top = `${coord2.y}%`;
     } else {
-        // Se estiverem em casas diferentes, ficam EXATAMENTE no centro do bloco
+        // Se estiverem em casas diferentes, ficam EXATAMENTE no centro do quadrado
         jogador1El.style.left = `${coord1.x}%`;
         jogador1El.style.top = `${coord1.y}%`;
 
@@ -234,6 +240,7 @@ function abrirPergunta() {
         const btn = document.createElement('button');
         btn.classList.add('btn-pixel', 'btn-opcao');
         btn.innerText = alt.texto;
+        btn.dataset.correta = alt.correta; // guarda se esta é a alternativa certa
         btn.onclick = () => verificarResposta(btn, alt.correta);
         opcoesContainer.appendChild(btn);
     });
@@ -253,6 +260,10 @@ function verificarResposta(botaoClicado, isCorreta) {
         }, 1500);
     } else {
         botaoClicado.classList.add('opcao-errada');
+        // Mostra a resposta certa em verde
+        botoes.forEach(b => {
+            if (b.dataset.correta === 'true') b.classList.add('opcao-certa');
+        });
         setTimeout(() => {
             modalPergunta.classList.add('escondido');
             passarTurno();
